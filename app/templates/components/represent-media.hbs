@@ -1,0 +1,29 @@
+<h4>Constraints Supported</h4>
+
+<ol>
+  {{#each constraints as |constraint|}}
+    <li>{{constraint}}</li>
+  {{/each}}
+</ol>
+
+<h4>Available Devices</h4>
+
+<ol>
+  {{#each devices as |device|}}
+    <li>{{device.kind}} - {{device.deviceId}}</li>
+  {{/each}}
+</ol>
+
+
+<select id="available-devices">
+  {{#each devices as |device|}}
+    <option value="{{device.deviceId}}">{{device.kind}} - {{device.label}}</option>
+  {{/each}}
+</select>
+
+<button {{action "getMedia"}}>Get Media</button>
+<button {{action "stopMedia"}}>Stop All</button>
+
+<div id="view">
+  <h4>View Zone</h4>
+</div>
