@@ -32,6 +32,7 @@ export default Ember.Component.extend({
     }
     elem.autoplay = true;
     elem.controls = true;
+    elem.volume = 0.3;
     elem.srcObject = stream;
     viewZone.appendChild(elem);
   },
@@ -67,6 +68,10 @@ export default Ember.Component.extend({
     stopMedia() {
       this.clearViewZone();
       WebRTC.stopAllTracks();
+    },
+
+    testMode() {
+      WebRTC.getMedia({testMode: true}).then(media => this.setMediaSrc(media, 'videoinput'), err => console.warn(err));
     }
   }
 
