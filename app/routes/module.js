@@ -5,8 +5,7 @@ import WebRTC from 'npm:webrtc-int';
 export default Ember.Route.extend({
 	model() {
     return RSVP.Promise.all([
-      WebRTC.listSupportedConstraints(),
-      WebRTC.listInputDevicesP()
+      WebRTC.listSupportedConstraints()
     ]);
 	}
 });

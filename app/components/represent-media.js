@@ -6,22 +6,12 @@ export default Ember.Component.extend({
   init(){
     this._super(...arguments);
 
-    WebRTC.getMedia({video:true, audio:true}).then(
-      res => {
-        const tracks = res.getTracks();
-        tracks.forEach((track) => {
-          track.stop();
-        });
-        return WebRTC.listInputDevicesP().then(
-        devices => {
-          console.log('All is good');
-          this.set('devices', devices);
-        }, err => {
-          console.error(err);
-        });
-      }, 
-      err => console.warn(err)
-    );
+    WebRTC.listInputDevices.fork(
+      err => {
+        console.error(err);
+      }, devices => {
+        this.set('devices', devices);
+      });
   },
 
   didReceiveAttrs(){
@@ -42,7 +32,6 @@ export default Ember.Component.extend({
     }
     elem.autoplay = true;
     elem.controls = true;
-    console.log(stream);
     elem.srcObject = stream;
     viewZone.appendChild(elem);
   },
