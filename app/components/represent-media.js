@@ -1,17 +1,30 @@
 import Ember from 'ember';
-import WebRTC from 'npm:webrtc-int';
+import WebRTC from 'npm:web-streams';
 
 export default Ember.Component.extend({
 
   init(){
     this._super(...arguments);
 
-    WebRTC.listInputDevices.fork(
+    WebRTC.listDevices.fork(
       err => {
         console.error(err);
       }, devices => {
         this.set('devices', devices);
       });
+
+    // console.log('Check Extension Availability');
+    // WebRTC.checkExtension.fork(
+    //   console.error,
+    //   r => {
+    //     console.log(r);
+        
+    //     console.log('Get Screen Constraints');
+    //     WebRTC.getScreenP().then(this.setSharedScreen, console.error)
+    //   }
+    // );
+
+    // WebRTC.getScreen.fork(console.warn, this.setSharedScreen);
   },
 
   didReceiveAttrs(){
@@ -37,11 +50,28 @@ export default Ember.Component.extend({
     viewZone.appendChild(elem);
   },
 
+  setSharedScreen(stream) {
+    const viewZone = Ember.$('#view')[0];
+    const elem = document.createElement('video');
+    elem.autoplay = true;
+    elem.controls = true;
+    elem.id = 'myScreenShare';
+    elem.srcObject = stream;
+    viewZone.appendChild(elem);
+    return stream;
+  },
+
   clearViewZone() {
     const viewZone = Ember.$('#view')[0];
     while (viewZone.children.length > 1) {
       viewZone.removeChild(viewZone.lastChild);
     }
+  },
+
+  handleScreenEnd(track) {
+    const elem = Ember.$('#myScreenShare')[0];
+    elem.parentElement.removeChild(elem);
+    console.log('Track Ended:', track);
   },
 
   actions: {
@@ -72,6 +102,17 @@ export default Ember.Component.extend({
 
     testMode() {
       WebRTC.getMedia({testMode: true}).then(media => this.setMediaSrc(media, 'videoinput'), err => console.warn(err));
+    },
+
+    getScreen() {
+      WebRTC.getScreen
+            .map(this.setSharedScreen)
+            .map(WebRTC.getTracks)
+            .map(arr => arr.map((track) => {
+              track.onended = this.handleScreenEnd;
+              return track;
+            }))
+            .fork(console.warn, console.log);
     }
   }
 
