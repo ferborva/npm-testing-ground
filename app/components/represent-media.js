@@ -1,12 +1,12 @@
 import Ember from 'ember';
-import WebRTC from 'npm:web-streams';
+import WebStreams from 'npm:web-streams';
 
 export default Ember.Component.extend({
 
   init(){
     this._super(...arguments);
 
-    WebRTC.listDevices.fork(
+    WebStreams.listDevices.fork(
       err => {
         console.error(err);
       }, devices => {
@@ -14,17 +14,17 @@ export default Ember.Component.extend({
       });
 
     // console.log('Check Extension Availability');
-    // WebRTC.checkExtension.fork(
+    // WebStreams.checkExtension.fork(
     //   console.error,
     //   r => {
     //     console.log(r);
         
     //     console.log('Get Screen Constraints');
-    //     WebRTC.getScreenP().then(this.setSharedScreen, console.error)
+    //     WebStreams.getScreenP().then(this.setSharedScreen, console.error)
     //   }
     // );
 
-    // WebRTC.getScreen.fork(console.warn, this.setSharedScreen);
+    // WebStreams.getScreen.fork(console.warn, this.setSharedScreen);
   },
 
   didReceiveAttrs(){
@@ -92,22 +92,22 @@ export default Ember.Component.extend({
           }
         };
       }
-      WebRTC.getMedia(constraints).then(media => this.setMediaSrc(media, kind), err => console.warn(err));
+      WebStreams.getMedia(constraints).then(media => this.setMediaSrc(media, kind), err => console.warn(err));
     },
 
     stopMedia() {
       this.clearViewZone();
-      WebRTC.stopAllTracks();
+      WebStreams.stopAllTracks();
     },
 
     testMode() {
-      WebRTC.getMedia({testMode: true}).then(media => this.setMediaSrc(media, 'videoinput'), err => console.warn(err));
+      WebStreams.getMedia({testMode: true}).then(media => this.setMediaSrc(media, 'videoinput'), err => console.warn(err));
     },
 
     getScreen() {
-      WebRTC.getScreen
+      WebStreams.getScreen
             .map(this.setSharedScreen)
-            .map(WebRTC.getTracks)
+            .map(media => media.getTracks())
             .map(arr => arr.map((track) => {
               track.onended = this.handleScreenEnd;
               return track;

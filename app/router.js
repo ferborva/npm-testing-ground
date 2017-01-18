@@ -7,7 +7,8 @@ const Router = Ember.Router.extend({
 });
 
 Router.map(function() {
-  this.route('module');
+  this.route('streams');
+  this.route('connections');
 });
 
 export default Router;

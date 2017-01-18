@@ -1,0 +1,19 @@
+<h5>Create New Connection</h5>
+
+<button {{action "createNewConnection" newConnectionId}}>Create Connection</button>
+
+<hr>
+
+<h5>Manage Connections</h5>
+
+{{input type="text" placeholder="Connection ID" value=connectionId}}
+
+<br>
+<p>I have made two ID's availabe for search and management: 123 &amp; 234</p>
+<br>
+<button {{action "getById" connectionId}}>Find by ID</button>
+
+
+<hr>
+
+<button {{action "close" connectionId}}>Close Connection</button>
